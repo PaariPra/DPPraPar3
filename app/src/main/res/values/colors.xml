@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#1AF348</color>
+    <color name="purple_500">#1AF348</color>
+    <color name="purple_700">#1AF348</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+
+
+
+
+    <color name="blue_color_picker">#0066FF</color>
+    <color name="brown_color_picker">#AF593E</color>
+    <color name="green_color_picker">#01A368</color>
+    <color name="orange_color_picker">#FF861F</color>
+    <color name="red_color_picker">#ED0A3F</color>
+    <color name="red_orange_color_picker">#FF3F34</color>
+    <color name="sky_blue_color_picker">#76D7EA</color>
+    <color name="violet_color_picker">#8359A3</color>
+    <color name="yellow_color_picker">#FBE870</color>
+    <color name="yellow_green_color_picker">#C5E17A</color>
+    <color name="tool_bg">#151414</color>
+    <color name="semi_black_transparent">#99000000</color>
+
+    <color name="col_1">#FFFFFFFF</color>
+    <color name="col_2">#C0C0C0</color>
+    <color name="col_3">#808080</color>
+    <color name="col_4">#000000</color>
+    <color name="col_5">#FF0000</color>
+    <color name="col_6">#800000</color>
+    <color name="col_7">#FFFF00</color>
+    <color name="col_8">#808000</color>
+    <color name="col_9">#00FF00</color>
+    <color name="col_10">#008000</color>
+    <color name="col_11">#00FFFF</color>
+    <color name="col_12">#008080</color>
+
+
+    <color name="col_13">#0000FF</color>
+    <color name="col_14">#000080</color>
+
+
+    <color name="col_15">#FF00FF</color>
+    <color name="col_16">#800080</color>
+    <color name="col_17">#f4722b</color>
+    <color name="col_18">#cd4f74</color>
+
+
+
+
+</resources>
