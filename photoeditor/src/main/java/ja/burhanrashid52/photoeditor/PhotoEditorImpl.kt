@@ -196,12 +196,12 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
         photoEditorView.setFilterEffect(filterType)
     }
 
-    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
+
     override fun saveAsFile(imagePath: String, onSaveListener: OnSaveListener) {
         saveAsFile(imagePath, SaveSettings.Builder().build(), onSaveListener)
     }
 
-    @SuppressLint("StaticFieldLeak")
+
     override fun saveAsFile(
         imagePath: String,
         saveSettings: SaveSettings,

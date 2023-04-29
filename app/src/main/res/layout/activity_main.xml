@@ -6,16 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_screen"
-    tools:context="com.whatsycrrop.dpmaker.activity.StartActivity">
+ >
+
 
 
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="@dimen/_130sdp"
-        android:layout_height="@dimen/_130sdp"
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_120sdp"
+        android:layout_marginTop="40dp"
         android:src="@drawable/ic_cropmy"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,14 +35,9 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,40 +50,42 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
-        </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout7"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/iv_imagesdsdasd">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_start"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/_30sdp"
-            android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginRight="@dimen/_30sdp"
-            android:layout_marginBottom="@dimen/_7sdp"
             android:background="@drawable/gg_dtart"
-            app:layout_constraintBottom_toTopOf="@+id/cl_privi3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="@dimen/_140sdp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_width="@dimen/_154sdp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_32sdp"
-
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_32sdp"
+
+                android:layout_marginBottom="@dimen/_5sdp"
 
                 android:src="@drawable/ic_start"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -104,24 +102,24 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_privi3"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/_30sdp"
-            android:layout_marginTop="@dimen/_7sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginRight="@dimen/_30sdp"
-            android:layout_marginBottom="@dimen/_15sdp"
             android:background="@drawable/gg_dtart"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_start">
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="@dimen/_140sdp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_width="@dimen/_154sdp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_32sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_32sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
                 android:src="@drawable/ic_mycreation"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -141,12 +139,61 @@
         android:visibility="invisible">
 
     </ImageView>
+    <ImageView
+        android:id="@+id/iv_imagesdsdasd"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:visibility="invisible">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
+    </ImageView>
+
+
+    <View
+        android:id="@+id/vi1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/black"
+        android:layout_marginLeft="@dimen/_8sdp"
+        android:layout_marginRight="@dimen/_8sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+        app:layout_constraintEnd_toStartOf="@+id/textView4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView4">
+
+    </View>
+
+    <View
+        android:id="@+id/vi2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginRight="@dimen/_8sdp"
+        android:layout_marginLeft="@dimen/_8sdp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textView4">
+
+    </View>
+    <TextView
+        android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:fontFamily="@font/mos_bolod"
+        android:text="More Apps"
+        android:textSize="@dimen/_15ssp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/idAVFlipper"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
+    </TextView>
+
+    <AdapterViewFlipper
+        android:id="@+id/idAVFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:layout_centerInParent="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

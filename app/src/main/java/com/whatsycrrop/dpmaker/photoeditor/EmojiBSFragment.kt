@@ -14,7 +14,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.whatsycrrop.dpmaker.R
-import com.whatsycrrop.dpmaker.photoeditor.PhotoApp.Companion.photoApp
+import com.whatsycrrop.dpmaker.adsclass.PhotoApp.photoApp
+
 import java.lang.NumberFormatException
 import java.util.ArrayList
 

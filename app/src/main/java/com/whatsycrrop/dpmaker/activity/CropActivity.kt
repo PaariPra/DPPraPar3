@@ -16,10 +16,9 @@ import com.lyrebirdstudio.croppylib.main.CroppyTheme
 import com.lyrebirdstudio.croppylib.main.StorageType
 import com.lyrebirdstudio.croppylib.util.file.FileCreator
 import com.lyrebirdstudio.croppylib.util.file.FileOperationRequest
-import com.whatsycrrop.dpmaker.adsclass.ShowIntertialads
 
 
-class CropActivity : AppCompatActivity() {
+class CropActivity : BasedataActivity() {
     var uri: Uri? = null
     var bitmap: Bitmap? = null
 
@@ -116,8 +115,8 @@ class CropActivity : AppCompatActivity() {
 
 
 
-                    val showIntertialads = ShowIntertialads()
-                    showIntertialads.shaowinr(this@CropActivity, object : ShowIntertialads.CAllBack {
+
+                    showInterstitial( object : CAllBack {
                         override fun callbac() {
 
                             startActivity(

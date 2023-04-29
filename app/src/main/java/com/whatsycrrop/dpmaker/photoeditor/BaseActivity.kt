@@ -12,11 +12,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
+import com.whatsycrrop.dpmaker.activity.BasedataActivity
 
 /**
  * Created by Burhanuddin Rashid on 1/17/2018.
  */
-open class BaseActivity : AppCompatActivity() {
+open class BaseActivity : BasedataActivity() {
     private var mProgressDialog: ProgressDialog? = null
     private var mPermission: String? = null
 

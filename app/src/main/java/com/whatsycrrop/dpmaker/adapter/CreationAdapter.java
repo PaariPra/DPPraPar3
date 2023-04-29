@@ -16,7 +16,6 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.whatsycrrop.dpmaker.R;
-import com.whatsycrrop.dpmaker.adsclass.ShowIntertialads;
 import com.whatsycrrop.dpmaker.interfaceces.selectectposion;
 import com.whatsycrrop.dpmaker.activity.PreviewActivity;
 
@@ -27,10 +26,10 @@ import java.util.ArrayList;
 public class CreationAdapter extends RecyclerView.Adapter<CreationAdapter.ViewHolder>{
     private ArrayList<File> listdata;
     private Activity activity;
-   private selectectposion selectectposion;
+   private clickintertial selectectposion;
 
    // RecyclerView recyclerView;  
-    public CreationAdapter(ArrayList<File> listdata, Activity activity, selectectposion selectectposion) {
+    public CreationAdapter(ArrayList<File> listdata, Activity activity, clickintertial selectectposion) {
         this.listdata = listdata;
         this.activity = activity;
         this.selectectposion = selectectposion;
@@ -56,25 +55,7 @@ public class CreationAdapter extends RecyclerView.Adapter<CreationAdapter.ViewHo
             public void onClick(View view) {
 
 
-                ShowIntertialads showIntertialads = new ShowIntertialads();
-                showIntertialads.shaowinr(activity, new ShowIntertialads.CAllBack() {
-                    @Override
-                    public void callbac() {
-
-
-                        activity.startActivity(new Intent(activity, PreviewActivity.class)
-                                .putExtra("uri",  FileProvider.getUriForFile(activity, activity.getPackageName() + ".provider", listdata.get(position)).toString())
-
-                                .putExtra("path", listdata.get(position).getAbsolutePath())
-                        );
-
-
-                    }
-                });
-
-
-
-
+                selectectposion.dataclas(listdata.get(position));
 
 
             }  
@@ -93,10 +74,6 @@ public class CreationAdapter extends RecyclerView.Adapter<CreationAdapter.ViewHo
 
             }
         });
-
-
-
-
 
 
     }  

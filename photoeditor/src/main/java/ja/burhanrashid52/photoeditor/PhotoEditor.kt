@@ -226,7 +226,7 @@ interface PhotoEditor {
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
-    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
+
     fun saveAsFile(imagePath: String, onSaveListener: OnSaveListener)
 
     /**
@@ -238,7 +238,7 @@ interface PhotoEditor {
      * @see OnSaveListener
      */
     @SuppressLint("StaticFieldLeak")
-    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
+
     fun saveAsFile(
         imagePath: String,
         saveSettings: SaveSettings,

@@ -3,21 +3,25 @@ package com.whatsycrrop.dpmaker.activity
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Window
+import android.widget.AdapterViewFlipper
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
@@ -27,8 +31,8 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.lyrebirdstudio.croppylib.main.FileCompressor
 import com.whatsycrrop.dpmaker.R
-import com.whatsycrrop.dpmaker.adsclass.ShowIntertialads
-import com.whatsycrrop.dpmaker.adsclass.ShowNAtivrbannerAds
+import com.whatsycrrop.dpmaker.adapter.AdapterViewFlipperAdapter
+import com.whatsycrrop.dpmaker.adapter.appclick
 import com.whatsycrrop.dpmaker.utiles.BitmapUtiles
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -41,7 +45,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbacks {
+class StartActivity : BasedataActivity(), PermissionCallbacks, RationaleCallbacks {
     var selectedImagePath: String? = null
     private val CHILD_DIR = "images"
 
@@ -50,6 +54,11 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
     var mCompressor: FileCompressor? = null
 
 
+    private var LOCATION_AND_CONTACTS = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA)
+
 
     var cl_start:ConstraintLayout?=null
     var cl_privi3:ConstraintLayout?=null
@@ -57,18 +66,44 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
     var iv_image:ImageView?=null
 
 
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+
+        if(Build.VERSION.SDK_INT>=33)
+        {
+            Log.e("TAG", "onCreate: uoversio"+Build.VERSION.SDK_INT )
+            LOCATION_AND_CONTACTS= arrayOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.CAMERA
+            )
+
+        }
+        else
+        {
+
+
+            LOCATION_AND_CONTACTS=      arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+            )
+        }
+
         cl_start=findViewById(R.id.cl_start);
         frameLayout=findViewById(R.id.frameLayout);
         cl_privi3=findViewById(R.id.cl_privi3);
         iv_image=findViewById(R.id.iv_image);
 
 
-
-        val showNAtivrbannerAds = ShowNAtivrbannerAds()
-        showNAtivrbannerAds.refreshAd(this@StartActivity, frameLayout!!)
 
 
         mCompressor =  FileCompressor(this);
@@ -77,7 +112,7 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
 
 
         cl_start!!.setOnClickListener {
-
+            ploadallint();
             locationAndContactsTask()
 
         }
@@ -86,8 +121,8 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
 
         cl_privi3!!.setOnClickListener {
 
-            val showIntertialads = ShowIntertialads()
-            showIntertialads.shaowinr(this@StartActivity, object : ShowIntertialads.CAllBack {
+
+            showInterstitial( object : CAllBack {
                 override fun callbac() {
 
                     startActivity(
@@ -98,13 +133,70 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
                 }
             })
 
-
-
-
-
-
         }
 
+
+
+      setmoreapps()
+
+
+        if (checkConnection(this@StartActivity)) {
+            datashonateve(frameLayout!!)
+        }
+
+
+    }
+
+    private fun setmoreapps() {
+        var languageAdapterViewFlipper: AdapterViewFlipper? = null
+        var languageImageArray = intArrayOf(
+            R.drawable.app_logo_ro,
+            R.drawable.ic_logo3,
+            R.drawable.ic_logo2)
+
+
+
+        var programmingLanguages = arrayOf(
+            "Photo Editor: BackgroundRemove",
+            "Whatzapp Status Downloader",
+            " Collage Maker: Photo Editor")
+
+
+
+        var applinkphoto = arrayOf(
+            "market://details?id=com.chetssholic.removebackgeround",
+             "market://details?id=com.chetsapp.whatsydirect",
+            "market://details?id=com.chettapps.photocollagemaker")
+
+
+
+
+        languageAdapterViewFlipper = findViewById(R.id.idAVFlipper)
+
+        val adapterViewFlipperAdapter = AdapterViewFlipperAdapter(
+            applicationContext, languageImageArray, programmingLanguages,applinkphoto , object : appclick
+            {
+                override fun appclic(pa:String) {
+                    ploadallint()
+
+                    val uri = Uri.parse(pa)
+                    val myAppLinkToMarket = Intent(Intent.ACTION_VIEW, uri)
+                    try {
+                        startActivity(myAppLinkToMarket)
+                    }
+                    catch (e:Exception)
+                    {
+                        Toast.makeText(this@StartActivity, " unable to find market app", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            }
+
+        )
+
+        languageAdapterViewFlipper.adapter = adapterViewFlipperAdapter
+        languageAdapterViewFlipper.flipInterval = 2500
+        languageAdapterViewFlipper.isAutoStart = true
 
     }
 
@@ -170,10 +262,10 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
 
 
 
-                                val showIntertialads = ShowIntertialads()
-                                showIntertialads.shaowinr(this@StartActivity, object : ShowIntertialads.CAllBack {
-                                    override fun callbac() {
 
+                                showInterstitial(object : CAllBack {
+                                    override fun callbac() {
+                                        ploadallint()
                                         startActivity(
                                             Intent(
                                                 this@StartActivity,
@@ -228,9 +320,11 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
                 )
 
 
-                val showIntertialads = ShowIntertialads()
-                showIntertialads.shaowinr(this@StartActivity, object : ShowIntertialads.CAllBack {
+
+                showInterstitial(object : CAllBack {
                     override fun callbac() {
+                        ploadallint()
+
                         startActivity(
                             Intent(
                                 this@StartActivity,
@@ -309,6 +403,7 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
 
             var cl_galler: ConstraintLayout = dialog.findViewById(R.id.cl_galler);
             var iv_close: ImageView = dialog.findViewById(R.id.iv_close);
+
             cl_galler.setOnClickListener {
 
             }
@@ -317,6 +412,7 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
 
 
             cl_galler.setOnClickListener {
+                ploadallint();
                 getImage(101, "drip")
                 dialog.dismiss()
             }
@@ -324,6 +420,7 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
 
             cl_camera.setOnClickListener {
 
+                ploadallint();
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
 
@@ -376,12 +473,10 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
     companion object {
         private const val TAG = "MainActivity"
         private  var  countvar0: Int?=0;
-        private val LOCATION_AND_CONTACTS =
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
-            )
+
+
+
+
         private const val RC_CAMERA_PERM = 123
         private const val RC_LOCATION_CONTACTS_PERM = 124
     }
@@ -433,16 +528,16 @@ class StartActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbac
     override fun onBackPressed()
     {
 
-        val showIntertialads = ShowIntertialads()
-        showIntertialads.shaowinr2(this@StartActivity, object : ShowIntertialads.CAllBack {
+        showInterstitial(object : CAllBack {
            override fun callbac() {
 
                startActivity(Intent(this@StartActivity, ExitActivity::class.java))
 
-
-
-            }
+           }
         })
     }
+
+
+
 
 }

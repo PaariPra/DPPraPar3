@@ -1,11 +1,10 @@
 package com.whatsycrrop.dpmaker.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -13,26 +12,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.whatsycrrop.dpmaker.R;
 import com.whatsycrrop.dpmaker.adapter.CreationAdapter;
-import com.whatsycrrop.dpmaker.adsclass.ShowIntertialads;
-import com.whatsycrrop.dpmaker.adsclass.ShowNAtivrbannerAds;
-import com.whatsycrrop.dpmaker.interfaceces.selectectposion;
-import com.whatsycrrop.dpmaker.utiles.TinyDB;
+import com.whatsycrrop.dpmaker.adapter.clickintertial;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 
-public class MyCrationActivity extends AppCompatActivity {
+public class MyCrationActivity extends BasedataActivity {
     ImageView ic_back2;
     TextView iv_no;
     RecyclerView rv_alldata;
@@ -42,6 +31,11 @@ public class MyCrationActivity extends AppCompatActivity {
 
     ArrayList<File> rm;
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ploadallint();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +43,12 @@ public class MyCrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_cration);
 
 
-        FrameLayout frameLayout= findViewById(R.id.frameLayout);
+        FrameLayout frameLayout = findViewById(R.id.frameLayout);
 
-        ShowNAtivrbannerAds showNAtivrbannerAds = new ShowNAtivrbannerAds();
-        showNAtivrbannerAds.refreshAd(MyCrationActivity.this, frameLayout);
+        if (checkConnection(MyCrationActivity.this)) {
 
-
+            datashonateve(frameLayout);
+        }
 
         ic_back2 = findViewById(R.id.ic_back2);
         rv_alldata = findViewById(R.id.rv_alldata);
@@ -64,7 +58,7 @@ public class MyCrationActivity extends AppCompatActivity {
         ic_back2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+              onBackPressed();
             }
         });
 
@@ -91,11 +85,9 @@ public class MyCrationActivity extends AppCompatActivity {
 
                 for (int i = 0; i < pictures.length; i++) {
 
-                    if(pictures[i].getName().equals("Test.png"))
-                    {
+                    if (pictures[i].getName().equals("Test.png")) {
                         pictures[i].delete();
-                    }
-                    else {
+                    } else {
                         rm.add(pictures[i]);
                     }
                 }
@@ -105,9 +97,23 @@ public class MyCrationActivity extends AppCompatActivity {
 
                 Collections.reverse(rm);
 
-                myListAdapter = new CreationAdapter(rm, MyCrationActivity.this, new selectectposion() {
+                myListAdapter = new CreationAdapter(rm, MyCrationActivity.this, new clickintertial() {
+
                     @Override
-                    public void potinodate(int postion) {
+                    public void dataclas(File file) {
+
+                        showInterstitial(new CAllBack() {
+                            @Override
+                            public void callbac() {
+
+                                startActivity(new Intent(MyCrationActivity.this, PreviewActivity.class)
+                                        .putExtra("uri", FileProvider.getUriForFile(MyCrationActivity.this, getPackageName() + ".provider", file).toString())
+                                        .putExtra("path", file.getAbsolutePath())
+                                );
+
+
+                            }
+                        });
 
 
                     }

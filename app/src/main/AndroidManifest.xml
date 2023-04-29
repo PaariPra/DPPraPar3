@@ -4,6 +4,7 @@
     package="com.whatsycrrop.dpmaker">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -51,7 +52,7 @@
         android:required="false" />
 
     <application
-        android:name=".photoeditor.PhotoApp"
+        android:name=".adsclass.PhotoApp"
         android:allowBackup="true"
         android:configChanges="orientation|keyboardHidden|screenSize"
         android:icon="@mipmap/app_logo"
@@ -64,14 +65,13 @@
         android:theme="@style/Theme.Dpmaker">
 
 
-
         <activity
             android:name=".activity.ExitActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
 
-         <activity
+        <activity
             android:name=".activity.MyCrationActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -84,16 +84,24 @@
             android:name=".activity.CropActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
+
+
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:theme="@style/Theme.Dpmaker2"
+           >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
+
         <activity
             android:name=".activity.StartActivity"
             android:exported="false"

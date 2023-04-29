@@ -1,10 +1,15 @@
 package com.whatsycrrop.dpmaker.activity
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.PointF
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -16,23 +21,19 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.Window
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.SeekBar
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.divyanshu.colorseekbar.ColorSeekBar
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
-import com.google.android.gms.ads.initialization.InitializationStatus
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import com.whatsycrrop.dpmaker.R
 import com.whatsycrrop.dpmaker.adapter.MyListAdapter
-import com.whatsycrrop.dpmaker.adsclass.ShowIntertialads
 import com.whatsycrrop.dpmaker.filter.ThumbnailCallback
 import com.whatsycrrop.dpmaker.filter.ThumbnailItem
 import com.whatsycrrop.dpmaker.filter.ThumbnailsAdapter
@@ -40,7 +41,6 @@ import com.whatsycrrop.dpmaker.filter.ThumbnailsManager
 import com.whatsycrrop.dpmaker.interfaceces.selectectposion
 import com.whatsycrrop.dpmaker.photoeditor.EditImageActivity
 import com.whatsycrrop.dpmaker.utiles.BitmapUtiles
-import com.whatsycrrop.dpmaker.utiles.TinyDB
 import com.zomato.photofilters.SampleFilters
 import com.zomato.photofilters.imageprocessors.Filter
 //import kotlinx.android.synthetic.main.activity_edit.*
@@ -55,10 +55,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class EditActivity : AppCompatActivity(), ThumbnailCallback {
+class EditActivity : BasedataActivity(), ThumbnailCallback {
     var uri: Uri? = null
     var bitmap: Bitmap? = null
-    var ad_view: AdView?=null;
+
 
     var d = 0f
     var newRot = 0f
@@ -74,38 +74,37 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
     private var xCoOrdinate = 0f
     private var yCoOrdinate: Float = 0f
 
-    private var iv_effect:ImageView?=null
-    private var sek_blure:SeekBar?=null
-    private var imageview_id:ImageView?=null
-    private var ic_back:ImageView?=null
+    private var iv_effect: ImageView? = null
+    private var sek_blure: SeekBar? = null
+    private var imageview_id: ImageView? = null
+    private var iv_frame: ImageView? = null
+    private var ic_back: ImageView? = null
 
 
-    private var imageView6:ImageView?=null
-    private var imageView7:ImageView?=null
-    private var imageView8:ImageView?=null
-    private var imageView9:ImageView?=null
-    private var imageView10:ImageView?=null
-    private var cl_showbg:ConstraintLayout?=null
-    private var iv_flp1:ImageView?=null
-    private var iv_flp2:ImageView?=null
-    private var iv_save:ImageView?=null
-    private var iv_fpain:ImageView?=null
+    private var imageView6: ImageView? = null
+    private var imageView7: ImageView? = null
+    private var imageView8: ImageView? = null
+    private var imageView9: ImageView? = null
+    private var imageView10: ImageView? = null
+    private var cl_showbg: ConstraintLayout? = null
+    private var iv_flp1: ImageView? = null
+    private var iv_flp2: ImageView? = null
+    private var iv_save: ConstraintLayout? = null
+    private var iv_fpain: ConstraintLayout? = null
+    private var cl_frame: ConstraintLayout? = null
 
 
-    private var RLMain:RelativeLayout?=null
+    private var RLMain: ConstraintLayout? = null
 
 
-    private var cl_bg:RecyclerView?=null
-    private var cl_bg2:RecyclerView?=null
-    private var menuLayout:RecyclerView?=null
+    private var rv_frame: RecyclerView? = null
+    private var cl_bg: RecyclerView? = null
+    private var cl_bg2: RecyclerView? = null
+    private var menuLayout: RecyclerView? = null
 
 
-
-
-
-
-    private var color_seek_bar:ColorSeekBar?=null
-    private var sek_rotation:SeekBar?=null
+    private var color_seek_bar: ColorSeekBar? = null
+    private var sek_rotation: SeekBar? = null
 
 
     companion object {
@@ -117,22 +116,17 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
     var lastEvent: FloatArray? = null
 
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode== RESULT_OK)
-        {
-            if(requestCode==90)
-            {
-
-
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 90) {
 
 
                 uri = Uri.parse(data!!.extras!!.getString("uri"))
 
                 bitmap = BitmapUtiles.decodeUriToBitmap(this@EditActivity, uri)
 
-                var  path = data!!.extras!!.getString("uri")
+                var path = data!!.extras!!.getString("uri")
 
                 var w: Int = bitmap!!.getWidth()
                 var h: Int = bitmap!!.getHeight()
@@ -154,19 +148,10 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
                 imageview_id!!.setImageBitmap(bitmap)
 
 
-
-
-
-
-
-
-
             }
 
         }
     }
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -174,53 +159,54 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
         setContentView(R.layout.activity_edit)
 
 
-
-        ad_view=findViewById(R.id.ad_view);
-        iv_effect=findViewById(R.id.iv_effect);
-        sek_blure=findViewById(R.id.sek_blure);
-        ic_back=findViewById(R.id.ic_back);
-        imageview_id=findViewById(R.id.imageview_id);
-        color_seek_bar=findViewById(R.id.color_seek_bar);
-        sek_rotation=findViewById(R.id.sek_rotation);
-        iv_flp1=findViewById(R.id.iv_flp1);
-        iv_flp2=findViewById(R.id.iv_flp2);
-        iv_save=findViewById(R.id.iv_save);
-        RLMain=findViewById(R.id.RLMain);
+        if (checkConnection(this@EditActivity)) {
+            banneraddload(findViewById(R.id.adloatoyt))
+        }
 
 
-        cl_bg=findViewById(R.id.cl_bg);
-        cl_bg2=findViewById(R.id.cl_bg2);
+        iv_effect = findViewById(R.id.iv_effect);
+        sek_blure = findViewById(R.id.sek_blure);
+        ic_back = findViewById(R.id.ic_back);
+        iv_frame = findViewById(R.id.iv_frame);
+        imageview_id = findViewById(R.id.imageview_id);
+        color_seek_bar = findViewById(R.id.color_seek_bar);
+        sek_rotation = findViewById(R.id.sek_rotation);
+        iv_flp1 = findViewById(R.id.iv_flp1);
+        iv_flp2 = findViewById(R.id.iv_flp2);
+        iv_save = findViewById(R.id.iv_save);
+        RLMain = findViewById(R.id.RLMain);
 
 
-        menuLayout=findViewById(R.id.menuLayout);
-        imageView6=findViewById(R.id.imageView6);
-        imageView7=findViewById(R.id.imageView7);
-        imageView8=findViewById(R.id.imageView8);
-        imageView9=findViewById(R.id.imageView9);
-        imageView10=findViewById(R.id.imageView10);
-        cl_showbg=findViewById(R.id.cl_showbg);
-        iv_fpain=findViewById(R.id.iv_fpain);
+        rv_frame = findViewById(R.id.rv_frame);
+        cl_bg = findViewById(R.id.cl_bg);
+        cl_bg2 = findViewById(R.id.cl_bg2);
+
+
+        menuLayout = findViewById(R.id.menuLayout);
+        imageView6 = findViewById(R.id.imageView6);
+        imageView7 = findViewById(R.id.imageView7);
+        imageView8 = findViewById(R.id.imageView8);
+        imageView9 = findViewById(R.id.imageView9);
+        imageView10 = findViewById(R.id.imageView10);
+        cl_showbg = findViewById(R.id.cl_showbg);
+        iv_fpain = findViewById(R.id.iv_fpain);
+        cl_frame = findViewById(R.id.cl_frame);
 
 
 
         iv_fpain!!.setOnClickListener {
-            val showIntertialads = ShowIntertialads()
-            showIntertialads.shaowinr(this@EditActivity, object : ShowIntertialads.CAllBack {
+
+            showInterstitial(object : CAllBack {
                 override fun callbac() {
 
 
                     val intent = Intent(this@EditActivity, EditImageActivity::class.java)
-                    intent.putExtra("uri",  uri.toString())
+                    intent.putExtra("uri", uri.toString())
                     startActivityForResult(intent, 90)
-
-
-
 
 
                 }
             })
-
-
 
 
         }
@@ -229,7 +215,6 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
 
 
 
-   Daabaner();
 
 
 
@@ -265,18 +250,39 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
         imageview_id!!.setImageBitmap(bitmap)
 
         ic_back!!.setOnClickListener {
-            finish()
+            showInterstitial(object : CAllBack {
+                override fun callbac() {
+                    onBackPressed()
+                }
+            })
+
+
         }
 
 
+        cl_frame!!.setOnClickListener {
+            ploadallint();
+            rv_frame!!.visibility = View.VISIBLE
 
-
-        imageView9!!.setOnClickListener {
-            color_seek_bar!!.visibility = View.VISIBLE
+            color_seek_bar!!.visibility = View.GONE
 
             cl_bg!!.visibility = View.GONE
             cl_bg2!!.visibility = View.GONE
 
+            sek_blure!!.visibility = View.GONE
+            sek_rotation!!.visibility = View.GONE
+            menuLayout!!.visibility = View.GONE
+
+
+        }
+
+        imageView9!!.setOnClickListener {
+            ploadallint();
+            color_seek_bar!!.visibility = View.VISIBLE
+
+            cl_bg!!.visibility = View.GONE
+            cl_bg2!!.visibility = View.GONE
+            rv_frame!!.visibility = View.GONE
             sek_blure!!.visibility = View.GONE
             sek_rotation!!.visibility = View.GONE
             menuLayout!!.visibility = View.GONE
@@ -285,13 +291,14 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
 
 
         cl_showbg!!.setOnClickListener {
-
+            ploadallint();
             color_seek_bar!!.visibility = View.GONE
             sek_rotation!!.visibility = View.GONE
             sek_blure!!.visibility = View.GONE
             cl_bg!!.visibility = View.GONE
             cl_bg2!!.visibility = View.VISIBLE
             menuLayout!!.visibility = View.GONE
+            rv_frame!!.visibility = View.GONE
         }
 
 
@@ -299,36 +306,40 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
 
 
         imageView6!!.setOnClickListener {
-
+            ploadallint();
             color_seek_bar!!.visibility = View.GONE
             sek_rotation!!.visibility = View.GONE
             sek_blure!!.visibility = View.GONE
             cl_bg!!.visibility = View.VISIBLE
             cl_bg2!!.visibility = View.GONE
             menuLayout!!.visibility = View.GONE
+            rv_frame!!.visibility = View.GONE
 
 
         }
 
         imageView8!!.setOnClickListener {
+            ploadallint();
             color_seek_bar!!.visibility = View.GONE
             sek_rotation!!.visibility = View.VISIBLE
             sek_blure!!.visibility = View.GONE
             cl_bg!!.visibility = View.GONE
             cl_bg2!!.visibility = View.GONE
             menuLayout!!.visibility = View.GONE
+            rv_frame!!.visibility = View.GONE
 
         }
 
 
         imageView7!!.setOnClickListener {
+            ploadallint();
             color_seek_bar!!.visibility = View.GONE
             sek_rotation!!.visibility = View.GONE
             cl_bg!!.visibility = View.GONE
             cl_bg2!!.visibility = View.GONE
             sek_blure!!.visibility = View.VISIBLE
             menuLayout!!.visibility = View.GONE
-
+            rv_frame!!.visibility = View.GONE
 
             var bmp2 = bitmap!!.copy(bitmap!!.getConfig(), true);
             var bitmap2: Bitmap? = blur(bmp2, 12f)
@@ -340,18 +351,20 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
         }
 
         imageView10!!.setOnClickListener {
+            ploadallint();
             menuLayout!!.visibility = View.VISIBLE
             color_seek_bar!!.visibility = View.GONE
             sek_rotation!!.visibility = View.GONE
             cl_bg!!.visibility = View.GONE
             cl_bg2!!.visibility = View.GONE
             sek_blure!!.visibility = View.GONE
+            rv_frame!!.visibility = View.GONE
         }
 
 
 
         iv_flp1!!.setOnClickListener {
-
+            ploadallint();
             iv_flp1!!.rotationX = iv_flp1!!.rotationX + 180f;
             imageview_id!!.rotationX = imageview_id!!.rotationX + 180f;
 
@@ -359,6 +372,7 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
 
 
         iv_flp2!!.setOnClickListener {
+            ploadallint();
             iv_flp2!!.rotationY = iv_flp2!!.rotationY + 180f;
             imageview_id!!.rotationY = imageview_id!!.rotationY + 180f;
 
@@ -368,7 +382,6 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
 
         iv_save!!.setOnClickListener {
 
-            Log.e("TAG", "onCreate: ")
 
             RLMain!!.setDrawingCacheEnabled(true)
             val bitmap: Bitmap = Bitmap.createBitmap(RLMain!!.getDrawingCache())
@@ -382,24 +395,18 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
                 this@EditActivity
             );
 
+            val intent = Intent(this@EditActivity, PreviewActivity::class.java)
+            intent.putExtra("uri", uri.toString())
 
-
-
-            val showIntertialads = ShowIntertialads()
-
-
-
-            showIntertialads.shaowinr(this@EditActivity, object : ShowIntertialads.CAllBack {
+            showInterstitial(object : CAllBack {
                 override fun callbac() {
 
-                    val intent = Intent(this@EditActivity, PreviewActivity::class.java)
-                    intent.putExtra("uri",  uri.toString())
+
                     startActivity(intent)
 
 
                 }
             })
-
 
 
         }
@@ -462,9 +469,6 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
         })
 
 
-
-
-
         val myListData3: ArrayList<Int> = ArrayList()
         myListData3.add(R.drawable.gd_1)
         myListData3.add(R.drawable.gd_4)
@@ -495,10 +499,6 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
         cl_bg!!.adapter = adapter
 
 
-
-
-
-
         val myListData43: ArrayList<Int> = ArrayList()
         myListData43.add(R.drawable.bg_s1)
         myListData43.add(R.drawable.bg_s2)
@@ -510,11 +510,13 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
         myListData43.add(R.drawable.bg_s8)
 
 
-
         val adapter2 = MyListAdapter(myListData43, this@EditActivity, object : selectectposion {
             override fun potinodate(postion: Int) {
+
+//                ploadallint()
                 iv_effect!!.setImageBitmap(null)
                 iv_effect!!.background = resources.getDrawable(postion);
+
 
             }
 
@@ -524,9 +526,65 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
         cl_bg2!!.adapter = adapter2
 
 
+        val mylistfarme: ArrayList<Int> = ArrayList()
+
+        mylistfarme.add(R.drawable.frame_1)
+        mylistfarme.add(R.drawable.frame_2)
+        mylistfarme.add(R.drawable.frame_3)
+        mylistfarme.add(R.drawable.frame_4)
+        mylistfarme.add(R.drawable.frame_5)
+        mylistfarme.add(R.drawable.frame_26)
+        mylistfarme.add(R.drawable.frame_27)
+        mylistfarme.add(R.drawable.frame_28)
+        mylistfarme.add(R.drawable.frame_29)
+        mylistfarme.add(R.drawable.frame_30)
+        mylistfarme.add(R.drawable.frame_31)
+        mylistfarme.add(R.drawable.frame_32)
+        mylistfarme.add(R.drawable.frame_33)
+        mylistfarme.add(R.drawable.frame_34)
+        mylistfarme.add(R.drawable.frame_35)
+        mylistfarme.add(R.drawable.frame_36)
+        mylistfarme.add(R.drawable.frame_37)
 
 
 
+        mylistfarme.add(R.drawable.frame_6)
+        mylistfarme.add(R.drawable.frame_7)
+        mylistfarme.add(R.drawable.frame_8)
+        mylistfarme.add(R.drawable.frame_9)
+
+        mylistfarme.add(R.drawable.frames_10)
+        mylistfarme.add(R.drawable.frame_11)
+        mylistfarme.add(R.drawable.frame_12)
+        mylistfarme.add(R.drawable.frame_13)
+        mylistfarme.add(R.drawable.frame_14)
+        mylistfarme.add(R.drawable.frame_15)
+        mylistfarme.add(R.drawable.frame_16)
+        mylistfarme.add(R.drawable.frame_17)
+        mylistfarme.add(R.drawable.frames_18)
+        mylistfarme.add(R.drawable.frames_19)
+        mylistfarme.add(R.drawable.frames_20)
+        mylistfarme.add(R.drawable.frames_21)
+        mylistfarme.add(R.drawable.frames_22)
+        mylistfarme.add(R.drawable.frames_23)
+        mylistfarme.add(R.drawable.frames_24)
+        mylistfarme.add(R.drawable.frames_25)
+
+
+        val adfarme = MyListAdapter(mylistfarme, this@EditActivity, object : selectectposion {
+            override fun potinodate(postion: Int) {
+
+
+
+                iv_frame!!.setImageResource(postion)
+
+
+            }
+
+        })
+       rv_frame!!.setHasFixedSize(true)
+       rv_frame!!.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+       rv_frame!!.adapter = adfarme
 
 
 
@@ -539,26 +597,111 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
 
     }
 
-    private fun Daabaner() {
-        val tinyDB = TinyDB(this@EditActivity)
-        val status = tinyDB.getInt("status")
-        if (status == 1) {
+    override fun onBackPressed() {
+        ploadallint()
+        showSaveDialog();
+
+    }
+
+    private fun showSaveDialog() {
 
 
+        val dialog = Dialog(this@EditActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.save_dialog)
 
-            MobileAds.setRequestConfiguration(
-                RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
-                    .build()
-            )
+        var cl_galler: ConstraintLayout = dialog.findViewById(R.id.cl_galler);
+        var iv_close: ImageView = dialog.findViewById(R.id.iv_close);
+        var cl_camera: ConstraintLayout = dialog.findViewById(R.id.cl_camera)
 
 
-            val adRequest = AdRequest.Builder().build()
-            ad_view!!.visibility=View.VISIBLE
-            ad_view!!.loadAd(adRequest)
+        iv_close.setOnClickListener {
+            ploadallint()
+            dialog.dismiss()
+        }
+
+
+        cl_galler.setOnClickListener {
+
+
+            dialog.dismiss()
+
+
+            showInterstitial {
+                finish()
+
+            }
+
+
 
 
         }
+
+
+
+        cl_camera.setOnClickListener {
+
+            dialog.dismiss()
+
+            savimage();
+
+        }
+        dialog.show()
+
+
     }
+
+    private fun savimage() {
+        RLMain!!.setDrawingCacheEnabled(true)
+        val bitmap: Bitmap = Bitmap.createBitmap(RLMain!!.getDrawingCache())
+        RLMain!!.setDrawingCacheEnabled(false)
+
+        val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm")
+        val date = df.format(Calendar.getInstance().time)
+        var uri: Uri = BitmapUtiles.storeImage(
+            bitmap,
+
+            this@EditActivity
+        );
+
+        val intent = Intent(this@EditActivity, PreviewActivity::class.java)
+        intent.putExtra("uri", uri.toString())
+
+        showInterstitial(object : CAllBack {
+            override fun callbac() {
+
+
+                startActivity(intent)
+
+
+            }
+        })
+
+    }
+
+
+//    private fun Daabaner() {
+//        val tinyDB = TinyDB(this@EditActivity)
+//        val status = tinyDB.getInt("status")
+//        if (status == 1) {
+//
+//
+//
+//            MobileAds.setRequestConfiguration(
+//                RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
+//                    .build()
+//            )
+//
+//
+//            val adRequest = AdRequest.Builder().build()
+//            ad_view!!.visibility=View.VISIBLE
+//            ad_view!!.loadAd(adRequest)
+//
+//
+//        }
+//    }
 
     private fun bindDataToAdapter() {
 
@@ -796,8 +939,6 @@ class EditActivity : AppCompatActivity(), ThumbnailCallback {
         returnCursor.close()
         return name
     }
-
-
 
 
 }

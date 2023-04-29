@@ -6,23 +6,20 @@
     <string name="ad_attribution">Ad</string>
 
 
+    <!--    //live id22-->
+<!--        <string name="inter_ad_unit_id">ca-app-pub-3499781945684633/1157866862</string>-->
+<!--        <string name="banner_ad_unit_id">ca-app-pub-3499781945684633/8106418597</string>-->
+<!--        <string name="native_ad_unit_id">ca-app-pub-3499781945684633/7148560147</string>-->
+<!--        <string name="add_id">ca-app-pub-3499781945684633~5671826940</string>-->
+<!--        <string name="open_ad_unit_id">ca-app-pub-3499781945684633/4552214792</string>-->
 
 
-<!--            //live id22-->
-<!--            <string name="inter_ad_unit_id">ca-app-pub-3499781945684633/1157866862</string>-->
-<!--            <string name="banner_ad_unit_id">ca-app-pub-3499781945684633/8106418597</string>-->
-<!--            <string name="native_ad_unit_id">ca-app-pub-3499781945684633/7148560147</string>-->
-<!--            <string name="add_id">ca-app-pub-3499781945684633~5671826940</string>-->
-
-
-
-    //test id
-    <string name="add_id">ca-app-pub-3940256099942544~3347511713</string>
+<!--    //test id-->
+ <string name="add_id">ca-app-pub-3940256099942544~3347511713</string>
     <string name="inter_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="native_ad_unit_id">ca-app-pub-3940256099942544/2247696110</string>
-
-
+    <string name="open_ad_unit_id">ca-app-pub-3940256099942544/3419835294</string>
 
 
     <string name="msg_save_image">Are you want to exit without saving image ?</string>

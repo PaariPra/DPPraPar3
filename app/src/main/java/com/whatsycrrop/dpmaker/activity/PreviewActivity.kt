@@ -1,35 +1,27 @@
 package com.whatsycrrop.dpmaker.activity
 
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.view.Window
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
+import androidx.core.content.FileProvider
 import com.whatsycrrop.dpmaker.BuildConfig
 import com.whatsycrrop.dpmaker.R
-import com.whatsycrrop.dpmaker.utiles.TinyDB
-
 import java.util.*
-import android.widget.Toast
-
-import android.content.ActivityNotFoundException
 
 
-class PreviewActivity : AppCompatActivity() {
+class PreviewActivity : BasedataActivity() {
     var uri: Uri? = null
 
-    var ad_view: AdView? = null
+
     var ic_back2: ImageView? = null
     var iv_effect2: ImageView? = null
     var iv_more: ImageView? = null
@@ -38,10 +30,24 @@ class PreviewActivity : AppCompatActivity() {
     var cl_privi: ConstraintLayout? = null
 
     var bitmap: Bitmap? = null
+
+    override fun onBackPressed() {
+
+
+        showInterstitial {
+            super.onBackPressed()
+
+        }
+
+
+
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
-        ad_view = findViewById(R.id.ad_view);
+
         ic_back2 = findViewById(R.id.ic_back2);
         iv_effect2 = findViewById(R.id.iv_effect2);
         iv_share = findViewById(R.id.iv_share);
@@ -51,12 +57,16 @@ class PreviewActivity : AppCompatActivity() {
 
 
 
-
         uri = Uri.parse(intent.extras!!.getString("uri"))
 
         ic_back2!!.setOnClickListener {
 
-            finish()
+
+
+            onBackPressed();
+
+
+
 
         }
 
@@ -68,23 +78,26 @@ class PreviewActivity : AppCompatActivity() {
 
         iv_effect2!!.setImageURI(uri)
         iv_share!!.setOnClickListener {
-
+            ploadallint()
             funktionTeilen(uri);
 
 
         }
         cl_start!!.setOnClickListener {
+            ploadallint()
             sharewhats3(uri!!)
 
         }
 
         cl_privi!!.setOnClickListener {
+            ploadallint()
             sharewhats(uri!!);
 
         }
 
         iv_more!!.setOnClickListener {
 
+            ploadallint()
             val dialog = Dialog(this@PreviewActivity)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(true)
@@ -94,6 +107,7 @@ class PreviewActivity : AppCompatActivity() {
             var cl_rate: ConstraintLayout = dialog.findViewById(R.id.cl_rate);
 
             cl_share.setOnClickListener {
+                ploadallint()
                 dialog.dismiss()
                 try {
                     val shareIntent = Intent(Intent.ACTION_SEND)
@@ -116,6 +130,7 @@ class PreviewActivity : AppCompatActivity() {
 
             }
             cl_rate.setOnClickListener {
+                ploadallint()
                 dialog.dismiss()
 
 

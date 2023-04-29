@@ -82,7 +82,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private var EMOJI: LinearLayout? = null
 
     private var ic_back2: ImageView? = null
-    var ad_view: AdView?=null;
+
     @VisibleForTesting
     var mSaveImageUri: Uri? = null
     private var mSaveFileHelper: FileSaveHelper? = null
@@ -94,7 +94,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         setContentView(R.layout.activity_edit_image)
 
         initViews()
-        Daabaner();
+
         handleIntentImage(mPhotoEditorView?.source)
         mWonderFont = Typeface.createFromAsset(assets, "beyond_wonderland.ttf")
         mPropertiesBSFragment = PropertiesBSFragment()
@@ -120,30 +120,27 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mPhotoEditorView?.source?.setImageURI(uri)
 
 
-
-
-
-
-
-
         mSaveFileHelper = FileSaveHelper(this)
 
 
 
         SHAPE!!.setOnClickListener {
-
+            ploadallint();
             mPhotoEditor?.setBrushDrawingMode(true)
             mShapeBuilder = ShapeBuilder()
             mPhotoEditor?.setShape(mShapeBuilder)
             showBottomSheetDialogFragment(mShapeBSFragment)
+
+
         }
 
         EMOJI!!.setOnClickListener {
-
+            ploadallint();
             showBottomSheetDialogFragment(mEmojiBSFragment)
         }
 
         TEXT!!.setOnClickListener {
+            ploadallint();
             val textEditorDialogFragment = TextEditorDialogFragment.show(this)
             textEditorDialogFragment.setOnTextEditorListener(object :
                 TextEditorDialogFragment.TextEditorListener {
@@ -156,7 +153,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             })
         }
         ERASER!!.setOnClickListener {
-
+            ploadallint();
             mPhotoEditor?.brushEraser()
 
         }
@@ -194,7 +191,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
     private fun initViews() {
-        ad_view=findViewById(R.id.ad_view);
+
         mPhotoEditorView = findViewById(R.id.photoEditorView)
         mRootView = findViewById(R.id.rootView)
 
@@ -209,7 +206,23 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         ERASER = findViewById(R.id.ERASER);
         EMOJI = findViewById(R.id.EMOJI);
         ic_back2 = findViewById(R.id.ic_back2);
-        ic_back2!!.setOnClickListener { finish() }
+        ic_back2!!.setOnClickListener {
+
+            showInterstitial(object : CAllBack {
+                override fun callbac() {
+
+
+                    finish()
+
+                }
+            })
+
+
+
+
+
+
+        }
 
     }
 
@@ -258,9 +271,18 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     @SuppressLint("NonConstantResourceId", "MissingPermission")
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.imgUndo -> mPhotoEditor?.undo()
-            R.id.imgRedo -> mPhotoEditor?.redo()
-            R.id.imgSave -> saveImage()
+            R.id.imgUndo -> {
+                ploadallint();
+                mPhotoEditor?.undo()
+            }
+            R.id.imgRedo -> {
+                ploadallint();
+                mPhotoEditor?.redo()
+            }
+            R.id.imgSave -> {
+                ploadallint();
+                saveImage()
+            }
 
 
         }
@@ -280,41 +302,20 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         )
     }
 
-    private fun Daabaner() {
-        val tinyDB = TinyDB(this@EditImageActivity)
-        val status = tinyDB.getInt("status")
-        if (status == 1) {
 
 
 
-            MobileAds.setRequestConfiguration(
-                RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
-                    .build()
-            )
-
-
-            val adRequest = AdRequest.Builder().build()
-            ad_view!!.visibility=View.VISIBLE
-            ad_view!!.loadAd(adRequest)
-
-
-        }
-    }
-
-    @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
     private fun saveImage() {
         val fileName = "Test" + ".png"
-        val hasStoragePermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-        if (hasStoragePermission || FileSaveHelper.isSdkHigherThan28()) {
+
+        Log.e("TAG", "saveImagesdsd: "+getFilesDir() )
+
             showLoading("Saving...")
 
             var cachePath: File? = null
             val cachePath2 = File(
-                Environment.getExternalStorageDirectory()
-                    .toString() + "/" + Environment.DIRECTORY_DOWNLOADS
+                getFilesDir()
+                    .toString()
             )
             if (!cachePath2.exists()) {
 
@@ -349,74 +350,34 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
                     intent = Intent()
                     intent.putExtra("uri", uri.toString())
                     intent.putExtra("path", imagePath)
-                    setResult(RESULT_OK, intent)
-                    finish()
+
+
+
+                    showInterstitial(object : CAllBack {
+                        override fun callbac() {
+
+                            setResult(RESULT_OK, intent)
+                            finish()
+
+                        }
+                    })
+
 //
                 }
 
                 override fun onFailure(@NonNull exception: Exception) {
-                    Log.e("PhotoEditor", "Failed to save Image")
+
+
+                    Log.e("PhotoEditor", "Failed to save Image"+exception.message)
+
+
                 }
             })
 
 
-//            mSaveFileHelper?.createFile(fileName, object : FileSaveHelper.OnFileCreateResult {
-//
-//                @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
-//                override fun onFileCreateResult(
-//                    created: Boolean,
-//                    filePath: String?,
-//                    error: String?,
-//                    uri: Uri?
-//                ) {
-//                    if (created && filePath != null) {
-//                        val saveSettings = SaveSettings.Builder()
-//                            .setClearViewsEnabled(true)
-//                            .setTransparencyEnabled(true)
-//                            .build()
-//
-//                        mPhotoEditor?.saveAsFile(
-//                            filePath,
-//                            saveSettings,
-//                            object : OnSaveListener {
-//                                override fun onSuccess(imagePath: String) {
-//
-//
-//                                    mSaveFileHelper?.notifyThatFileIsNowPubliclyAvailable(
-//                                        contentResolver
-//                                    )
-//                                    hideLoading()
-//                                    mSaveImageUri = uri
-//                                    mPhotoEditorView?.source?.setImageURI(mSaveImageUri)
-//
-//
-//                                    var intent: Intent;
-//                                    intent = Intent()
-//                                    intent.putExtra("uri", uri.toString())
-//                                    intent.putExtra("path", filePath)
-//                                    setResult(RESULT_OK, intent)
-//                                    finish()
-//
-//
-//
-//                                }
-//
-//                                override fun onFailure(exception: Exception) {
-//                                    hideLoading()
-//                                    showSnackbar("Failed to save Image")
-//                                }
-//                            })
-//                    } else {
-//                        hideLoading()
-//                        error?.let { showSnackbar(error) }
-//                    }
-//                }
-//            })
 
 
-        } else {
-            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
+
     }
 
     // TODO(lucianocheng): Replace onActivityResult with Result API from Google
@@ -482,8 +443,24 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         builder.setMessage(getString(R.string.msg_save_image))
         builder.setPositiveButton("Save") { _: DialogInterface?, _: Int -> saveImage() }
         builder.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-        builder.setNeutralButton("Discard") { _: DialogInterface?, _: Int -> finish() }
+        builder.setNeutralButton("Discard") { _: DialogInterface?, _: Int -> onfisjs()}
         builder.create().show()
+    }
+
+    private fun onfisjs() {
+
+        showInterstitial(object : CAllBack {
+            override fun callbac() {
+
+
+                finish()
+
+            }
+        })
+
+
+
+
     }
 
 
