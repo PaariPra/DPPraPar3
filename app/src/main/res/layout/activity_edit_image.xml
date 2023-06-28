@@ -148,7 +148,6 @@
 
 
                 <ImageView
-
                     android:layout_width="@dimen/_30sdp"
                     android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/ic_baseline_photo_size_select_small_24"
@@ -236,9 +235,43 @@
                 </TextView>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/Stiker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
 
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <ImageView
+
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/ic_baseline_emoji_emotions_24"
+                    android:tint="@color/white">
+
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:fontFamily="@font/mos_regu"
+                    android:text="Sticker"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp">
+
+                </TextView>
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/EMOJI"
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/_10sdp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -269,6 +302,7 @@
 
                 </TextView>
             </LinearLayout>
+
 
 
         </LinearLayout>

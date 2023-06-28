@@ -48,7 +48,7 @@ class EmojiBSFragment : BottomSheetDialogFragment() {
         }
         (contentView.parent as View).setBackgroundColor(resources.getColor(android.R.color.transparent))
         val rvEmoji: RecyclerView = contentView.findViewById(R.id.rvEmoji)
-        val gridLayoutManager = GridLayoutManager(activity, 5)
+        val gridLayoutManager = GridLayoutManager(activity, 3)
         rvEmoji.layoutManager = gridLayoutManager
         val emojiAdapter = EmojiAdapter()
         rvEmoji.adapter = emojiAdapter

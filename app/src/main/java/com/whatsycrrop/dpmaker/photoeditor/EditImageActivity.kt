@@ -63,7 +63,7 @@ import java.util.*
 
 
 class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickListener,
-    PropertiesBSFragment.Properties, ShapeBSFragment.Properties, EmojiBSFragment.EmojiListener {
+    PropertiesBSFragment.Properties, ShapeBSFragment.Properties, StickerBSFragment.StickerListener,EmojiBSFragment.EmojiListener {
 
     var mPhotoEditor: PhotoEditor? = null
     private var mPhotoEditorView: PhotoEditorView? = null
@@ -75,9 +75,10 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private var mRootView: ConstraintLayout? = null
     private val mConstraintSet = ConstraintSet()
     private var mIsFilterVisible = false
-
+    private var mStickerBSFragment: StickerBSFragment? = null
     private var SHAPE: LinearLayout? = null
     private var TEXT: LinearLayout? = null
+    private var Stiker: LinearLayout? = null
     private var ERASER: LinearLayout? = null
     private var EMOJI: LinearLayout? = null
 
@@ -88,8 +89,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     private var mSaveFileHelper: FileSaveHelper? = null
 
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_image)
 
@@ -101,6 +101,11 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         mEmojiBSFragment = EmojiBSFragment()
         mShapeBSFragment = ShapeBSFragment()
         mEmojiBSFragment?.setEmojiListener(this)
+
+        mStickerBSFragment = StickerBSFragment()
+        mStickerBSFragment!!.setStickerListener(this)
+
+
         mPropertiesBSFragment?.setPropertiesChangeListener(this)
         mShapeBSFragment?.setPropertiesChangeListener(this)
 
@@ -138,6 +143,15 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
             ploadallint();
             showBottomSheetDialogFragment(mEmojiBSFragment)
         }
+
+
+        Stiker!!.setOnClickListener {
+            mStickerBSFragment!!.show(supportFragmentManager, mStickerBSFragment!!.tag)
+
+        }
+
+
+
 
         TEXT!!.setOnClickListener {
             ploadallint();
@@ -202,6 +216,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         val imgSave: ImageView = findViewById(R.id.imgSave)
         imgSave.setOnClickListener(this)
         SHAPE = findViewById(R.id.SHAPE);
+        Stiker = findViewById(R.id.Stiker);
         TEXT = findViewById(R.id.TEXT);
         ERASER = findViewById(R.id.ERASER);
         EMOJI = findViewById(R.id.EMOJI);
@@ -216,10 +231,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
                 }
             })
-
-
-
-
 
 
         }
@@ -303,79 +314,74 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
     }
 
 
-
-
     private fun saveImage() {
         val fileName = "Test" + ".png"
 
-        Log.e("TAG", "saveImagesdsd: "+getFilesDir() )
+        Log.e("TAG", "saveImagesdsd: " + getFilesDir())
 
-            showLoading("Saving...")
+        showLoading("Saving...")
 
-            var cachePath: File? = null
-            val cachePath2 = File(
-                getFilesDir()
-                    .toString()
-            )
-            if (!cachePath2.exists()) {
+        var cachePath: File? = null
+        val cachePath2 = File(
+            getFilesDir()
+                .toString()
+        )
+        if (!cachePath2.exists()) {
 
-                cachePath2.mkdir()
-            }
-
-
-            cachePath = File(cachePath2.absolutePath, "WhtssiCropy")
-            if (!cachePath.exists()) {
-                cachePath.mkdir()
-            }
+            cachePath2.mkdir()
+        }
 
 
+        cachePath = File(cachePath2.absolutePath, "WhtssiCropy")
+        if (!cachePath.exists()) {
+            cachePath.mkdir()
+        }
 
 
 
-            mPhotoEditor!!.saveAsFile("$cachePath/$fileName", object : OnSaveListener {
-                override fun onSuccess(@NonNull imagePath: String) {
 
 
-                    mSaveFileHelper?.notifyThatFileIsNowPubliclyAvailable(
-                        contentResolver
-                    )
-                    hideLoading()
-                    var uri: Uri = Uri.fromFile(File(imagePath))
-
-                    mSaveImageUri = uri
-                    mPhotoEditorView?.source?.setImageURI(mSaveImageUri)
+        mPhotoEditor!!.saveAsFile("$cachePath/$fileName", object : OnSaveListener {
+            override fun onSuccess(@NonNull imagePath: String) {
 
 
-                    var intent: Intent;
-                    intent = Intent()
-                    intent.putExtra("uri", uri.toString())
-                    intent.putExtra("path", imagePath)
+                mSaveFileHelper?.notifyThatFileIsNowPubliclyAvailable(
+                    contentResolver
+                )
+                hideLoading()
+                var uri: Uri = Uri.fromFile(File(imagePath))
+
+                mSaveImageUri = uri
+                mPhotoEditorView?.source?.setImageURI(mSaveImageUri)
+
+
+                var intent: Intent;
+                intent = Intent()
+                intent.putExtra("uri", uri.toString())
+                intent.putExtra("path", imagePath)
 
 
 
-                    showInterstitial(object : CAllBack {
-                        override fun callbac() {
+                showInterstitial(object : CAllBack {
+                    override fun callbac() {
 
-                            setResult(RESULT_OK, intent)
-                            finish()
+                        setResult(RESULT_OK, intent)
+                        finish()
 
-                        }
-                    })
+                    }
+                })
 
 //
-                }
+            }
 
-                override fun onFailure(@NonNull exception: Exception) {
-
-
-                    Log.e("PhotoEditor", "Failed to save Image"+exception.message)
+            override fun onFailure(@NonNull exception: Exception) {
 
 
-                }
-            })
+                Log.e("PhotoEditor", "Failed to save Image" + exception.message)
 
 
-
+            }
+        })
 
 
     }
@@ -443,7 +449,7 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         builder.setMessage(getString(R.string.msg_save_image))
         builder.setPositiveButton("Save") { _: DialogInterface?, _: Int -> saveImage() }
         builder.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-        builder.setNeutralButton("Discard") { _: DialogInterface?, _: Int -> onfisjs()}
+        builder.setNeutralButton("Discard") { _: DialogInterface?, _: Int -> onfisjs() }
         builder.create().show()
     }
 
@@ -457,8 +463,6 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
 
             }
         })
-
-
 
 
     }
@@ -532,4 +536,9 @@ class EditImageActivity : BaseActivity(), OnPhotoEditorListener, View.OnClickLis
         const val ACTION_NEXTGEN_EDIT = "action_nextgen_edit"
         const val PINCH_TEXT_SCALABLE_INTENT_KEY = "PINCH_TEXT_SCALABLE"
     }
+
+    override fun onStickerClick(bitmap: Bitmap) {
+        mPhotoEditor!!.addImage(bitmap)
+    }
+
 }

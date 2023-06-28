@@ -33,6 +33,8 @@
         android:gravity="center"
         android:inputType="textMultiLine"
         android:singleLine="true"
+        android:hint="Enter Text"
+        android:textColorHint="#BFFFFFFF"
         android:textColorPrimary="#FFFFFF"
         android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/add_text_color_picker_recycler_view"

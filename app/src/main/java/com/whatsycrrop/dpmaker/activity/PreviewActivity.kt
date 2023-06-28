@@ -48,6 +48,10 @@ class PreviewActivity : BasedataActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
 
+        if (checkConnection(this@PreviewActivity)) {
+            banneraddload(findViewById(R.id.adloatoyt))
+        }
+
         ic_back2 = findViewById(R.id.ic_back2);
         iv_effect2 = findViewById(R.id.iv_effect2);
         iv_share = findViewById(R.id.iv_share);
